@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 import connectDB from "./config/db.js"
 import authRoutes from "./routes/authRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
-import adminRoutes from "./routes/adminRoutes.js"
 
 dotenv.config()
 
@@ -17,8 +16,10 @@ connectDB()
 app.use(cors({
   origin: [
     process.env.CLIENT_URL,
+    "https://quickshowsss.netlify.app",
     "http://localhost:5173",
-    "http://localhost:5174"
+    "http://localhost:5174",
+    "http://localhost:5175"
   ],
   credentials: true
 }))
@@ -32,15 +33,13 @@ app.get("/", (req, res) => {
     endpoints: {
       register: "POST /api/auth/register",
       login: "POST /api/auth/login",
-      dashboard: "GET /api/auth/dashboard (Protected)",
-      admin: "/api/admin"
+      dashboard: "GET /api/auth/dashboard (Protected)"
     }
   })
 })
 
 app.use("/api/auth", authRoutes)
 app.use("/api/profile", profileRoutes)
-app.use("/api/admin", adminRoutes)
 
 // Error handling middleware
 app.use((err, req, res, next) => {

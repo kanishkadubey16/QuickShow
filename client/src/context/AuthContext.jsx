@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+    const API_URL = import.meta.env.VITE_API_URL || 'https://quickshow-1-06tu.onrender.com/api';
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
