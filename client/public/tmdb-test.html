@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMDB API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        h1 { color: #e50914; }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .movie-card {
+            background: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .movie-info {
+            padding: 15px;
+        }
+        .movie-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .loading {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 50px;
+        }
+        .error {
+            color: #e50914;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 50px;
+        }
+        .success {
+            color: #46d369;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 TMDB API Test - Marvel Movies</h1>
+    <div id="status" class="loading">Testing API connection...</div>
+    <div id="movies" class="movie-grid"></div>
+
+    <script>
+        const API_KEY = '8265bd1679663a7ea12ac168da84d2e8';
+        const MARVEL_COMPANY_ID = 420;
+        
+        async function testTMDBAPI() {
+            const statusDiv = document.getElementById('status');
+            const moviesDiv = document.getElementById('movies');
+            
+            try {
+                const response = await fetch(
+                    `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_companies=${MARVEL_COMPANY_ID}&sort_by=popularity.desc&page=1`
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.results && data.results.length > 0) {
+                    statusDiv.className = 'success';
+                    statusDiv.innerHTML = `✅ API Working! Found ${data.results.length} Marvel movies`;
+                    
+                    // Display first 8 movies
+                    data.results.slice(0, 8).forEach(movie => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+                        card.innerHTML = `
+                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                            <div class="movie-info">
+                                <div class="movie-title">${movie.title}</div>
+                                <div>${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
+                                <div>⭐ ${movie.vote_average.toFixed(1)}</div>
+                            </div>
+                        `;
+                        moviesDiv.appendChild(card);
+                    });
+                } else {
+                    statusDiv.className = 'error';
+                    statusDiv.textContent = '❌ No movies found';
+                }
+            } catch (error) {
+                statusDiv.className = 'error';
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+                console.error('API Test Error:', error);
+            }
+        }
+        
+        testTMDBAPI();
+    </script>
+</body>
+</html>
