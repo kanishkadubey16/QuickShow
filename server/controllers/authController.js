@@ -39,7 +39,8 @@ export const register = async (req, res) => {
         name: user.name,
         email: user.email,
         profilePhoto: user.profilePhoto,
-        phoneNumber: user.phoneNumber
+        phoneNumber: user.phoneNumber,
+        role: user.role
       },
       token
     })
@@ -72,8 +73,24 @@ export const login = async (req, res) => {
         email: user.email,
         profilePhoto: user.profilePhoto,
         phoneNumber: user.phoneNumber,
+        role: user.role
       },
       token
+    })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+// @desc    Get current user
+// @route   GET /api/auth/me
+// @access  Private
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password")
+    res.json({
+      success: true,
+      user
     })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -85,14 +102,15 @@ export const login = async (req, res) => {
 // @access  Private
 export const dashboard = async (req, res) => {
   try {
-    const user = await User.findById(req.user).select("-password")
+    const user = req.user
     res.json({
       success: true,
       message: "Welcome to Dashboard",
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     })
   } catch (error) {

@@ -15,13 +15,10 @@ import { BookingProvider } from "./context/BookingContext";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import { AuthProvider } from "./context/AuthContext";
 import Favourite from "./pages/Favourite";
-
-
-
+import ProtectedRoute from './components/ProtectedRoute';
 import Payment from "./pages/Payment";
 
 const AppLayout = () => {
-  // ...
   const location = useLocation();
   const isAuthRoute = location.pathname === "/login" || location.pathname === "/register";
 
@@ -30,19 +27,22 @@ const AppLayout = () => {
       {!isAuthRoute && <Navbar />}
 
       <Routes>
-        {/* User Routes */}
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:id" element={<Moviedetails />} />
         <Route path="/trailers" element={<Trailers />} />
 
-        <Route path="/seats" element={<SeatLayout />} />
-        <Route path="/bookings" element={<MyBookings />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/manage-account" element={<ManageAccount />} />
+        {/* Private Routes */}
+        <Route path="/seats" element={<ProtectedRoute><SeatLayout /></ProtectedRoute>} />
+        <Route path="/bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+        <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+        <Route path="/manage-account" element={<ProtectedRoute><ManageAccount /></ProtectedRoute>} />
+        <Route path="/favourite" element={<ProtectedRoute><Favourite /></ProtectedRoute>} />
+
+        {/* Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/favourite" element={<Favourite />} />
       </Routes>
 
       {!isAuthRoute && <Footer />}

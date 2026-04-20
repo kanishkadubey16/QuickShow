@@ -10,17 +10,37 @@ export const AuthProvider = ({ children }) => {
     const API_URL = import.meta.env.VITE_API_URL || 'https://quickshow-1-06tu.onrender.com/api';
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser && token) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (e) {
-                console.error("Failed to parse user from localStorage", e);
-                localStorage.removeItem('user');
-                localStorage.removeItem('token');
+        const verifyUser = async () => {
+            if (token) {
+                try {
+                    const response = await fetch(`${API_URL}/auth/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUser(data.user);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                    } else {
+                        // Token invalid or expired
+                        logout();
+                    }
+                } catch (error) {
+                    console.error("Auth verification failed", error);
+                    // On network error, we might want to keep the local user state but mark as not verified
+                    // For now, let's just keep the stored user if it exists
+                    const storedUser = localStorage.getItem('user');
+                    if (storedUser) {
+                        setUser(JSON.parse(storedUser));
+                    }
+                }
             }
-        }
-        setLoading(false);
+            setLoading(false);
+        };
+
+        verifyUser();
     }, [token]);
 
     const login = async (email, password) => {

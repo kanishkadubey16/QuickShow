@@ -70,6 +70,7 @@ const Register = () => {
               value={formData.name}
               onChange={handleChange}
               required
+              autoComplete="name"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -84,6 +85,7 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -99,6 +101,7 @@ const Register = () => {
               onChange={handleChange}
               required
               minLength="6"
+              autoComplete="new-password"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -114,6 +117,7 @@ const Register = () => {
               onChange={handleChange}
               required
               minLength="6"
+              autoComplete="new-password"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>

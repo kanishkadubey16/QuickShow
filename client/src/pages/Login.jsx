@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 const Login = () => {
@@ -10,6 +10,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
   const { login } = useAuth()
 
   const handleChange = (e) => {
@@ -29,8 +30,9 @@ const Login = () => {
 
     if (result.success) {
       setMessage('Login successful!')
+      const from = location.state?.from?.pathname || '/';
       setTimeout(() => {
-        navigate('/')
+        navigate(from, { replace: true });
       }, 1000)
     } else {
       setMessage(result.message)
@@ -60,6 +62,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              autoComplete="email"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
@@ -74,6 +77,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              autoComplete="current-password"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
